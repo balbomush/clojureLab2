@@ -12,21 +12,16 @@
 (defn fun [c1 c2 n]
   (a/go-loop [prev 0]
     (when-some [value (a/<! c1)]
-      (println "value " value " diff " (- value prev))
+      ;(println "value " value " diff " (- value prev))
       (when (< n (- value prev))
         (println  "True")
         (a/>! c2 value))
       (recur value)))
+  (println c2)
+  (a/go-loop []
+    (when-some [value (a/<! c2)]
+      (println value)
+      (recur)))
   )
 
 (fun c1 c2 5)
-
-(defn tr [c]
-  (Thread/sleep 1000)
-  (println c)
-  (a/go-loop []
-    (when-some [value (a/<! c)]
-      (println value)
-      (recur))))
-(tr c1)
-(tr c2)
